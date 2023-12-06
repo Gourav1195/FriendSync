@@ -7,6 +7,9 @@ import SignupForm from './_auth/forms/SignupForm';
 import AuthLayout from './_auth/forms/AuthLayout';
 import RootLayout from './_root/RootLayout';
 
+// https://ui.shadcn.com/docs/installation/vite
+//shadcn didn't add absolute code to our project, it will only add the components that we acctually need
+//Have to manually add every single component we want to use
 export const App = () => {
   return (
   <main className='flex h-screen'>
