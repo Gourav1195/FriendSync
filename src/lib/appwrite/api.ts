@@ -1,6 +1,7 @@
-import { ID } from "appwrite";
+import { ID, Query } from "appwrite";
 import { INewUser } from "@/types";
 import { account, appwriteConfig, avatars, databases } from "./config";
+import { log } from "console";
 
 export async function createUserAccount(user:INewUser) {
     try {
@@ -46,6 +47,34 @@ export async function saveUserToDB(user: {
         user,
     )}
     catch (error){
+        console.log(error);
+    }
+}
+
+export async function signInAccount(user: {email: string; password: string;}){
+    try{
+        const session = await account.createEmailSession(user.email, user.password);
+
+        return session; 
+    } catch(error){
+        console.log(error);
+        
+    }
+}
+
+export async function getCurrentUser(){
+    try{
+        const currentAccount = await account.get();
+
+        if(!currectAccount) throw Error;
+
+        const currentUser = await databases.listDocuments(
+            appwriteConfig.databaseId,
+            appwriteConfig.userCollectionId,
+            [Query.equal('accountId',currentAccount.$id)]
+        )
+
+    } catch (error){
         console.log(error);
     }
 }

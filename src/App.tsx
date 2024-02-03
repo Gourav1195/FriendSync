@@ -6,6 +6,7 @@ import SigninForm from './_auth/forms/SigninForm';
 import SignupForm from './_auth/forms/SignupForm';
 import AuthLayout from './_auth/forms/AuthLayout';
 import RootLayout from './_root/RootLayout';
+import { Toaster } from "@/components/ui/toaster";
 
 // https://ui.shadcn.com/docs/installation/vite
 //shadcn didn't add absolute code to our project, it will only add the components that we acctually need
@@ -25,6 +26,7 @@ export const App = () => {
   <Route index element={<Home />} />
   </ Route>
   </Routes>
+  <Toaster />
   </main>
   )
 }

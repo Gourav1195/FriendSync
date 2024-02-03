@@ -2,10 +2,10 @@ import { zodResolver } from "@hookform/resolvers/zod"
 
 import { Button } from "@/components/ui/button"
 import { useForm } from "react-hook-form"
+import { useToast } from "@/components/ui/use-toast"
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -16,12 +16,17 @@ import { SignupValidation } from "@/lib/validation"
 import { z } from "zod"
 import Loader from "@/components/shared/Loader"
 import { Link } from "react-router-dom"
-import { createUserAccount } from "@/lib/appwrite/api"
+import { useCreateUserAccount, useSignInAccount } from "@/lib/react-query/querriesAndMutations"
 
 
 
 const SignupForm = () => {
-  const isLoading = false;
+  const { toast } = useToast();
+
+  const {mutateAsync: createUserAccount, isLoading: isCreatingUser} = useCreateUserAccount();
+
+  const {mutateAsync: signInAccount, isLoading: isSigningIn } = useSignInAccount();
+
   // 1. Define your form.
   const form = useForm<z.infer<typeof SignupValidation>>({
     resolver: zodResolver(SignupValidation),
@@ -35,10 +40,20 @@ const SignupForm = () => {
 
   async function onSubmit(values: z.infer<typeof SignupValidation>) {
     const newUser = await createUserAccount(values);
-    console.log(newUser)
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
-    console.log(values)
+    
+    if(!newUser) {
+      return  toast({ title: "Sign up failed. Please try again" }); 
+    }
+
+    const session = await signInAccount({
+      email: values.email,
+      password: values.password,
+    })
+
+    if(!session){
+      return toast({ title: 'SIgn in failed. Pls try again'})
+    }
+
   }
 //sm:w-420: small devices width is 420; h3-bold: small size; pt-5: padding top of 5; 
   return (
